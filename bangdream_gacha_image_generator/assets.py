@@ -10,8 +10,3 @@ class StaticPath:
     # star
     star_untrained = path.join(ASSETS, "img", "star_untrained.png")
     star_after_training = path.join(ASSETS, "img", "star_after_training.png")
-    # attribute_icon
-    icon_powerful = path.join(ASSETS, "img", "icon_powerful.png")
-    icon_powerful = path.join(ASSETS, "img", "icon_powerful.png")
-    # band_icon
-    band_icon_7 = path.join(ASSETS, "img", "band_icon_7.png")
