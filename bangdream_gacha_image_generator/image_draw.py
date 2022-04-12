@@ -1,7 +1,6 @@
-from os import path
 from io import BytesIO
 from PIL import Image
-from .assets import StaticPath, ASSETS
+from .assets import StaticPath, root
 from .card_draw import card_img_url, get_card_info, get_char_info
 from typing import Optional
 from loguru import logger
@@ -48,6 +47,7 @@ class Card:
         char_info = await get_char_info(characterId)
         self.bandID = char_info["bandId"]
 
+
 def draw_card_thumb(card: Card):
     image = card.image
     rarity = card.rarity
@@ -55,8 +55,8 @@ def draw_card_thumb(card: Card):
     bandID = card.bandID
     frame = open_img(frame_selector(rarity))
     star = open_img(StaticPath.star_untrained)
-    attribute = open_img(path.join(ASSETS, "img", f"icon_{attribute}.png"))
-    band_icon = open_img(path.join(ASSETS, "img", f"band_icon_{bandID}.png"))
+    attribute = open_img(root.img(f"icon_{attribute}.png"))
+    band_icon = open_img(root.img(f"band_icon_{bandID}.png"))
     image = image
     image.alpha_composite(frame)
     image.alpha_composite(band_icon, (3, 3))
