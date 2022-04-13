@@ -48,19 +48,24 @@ class Card:
         self.bandID = char_info["bandId"]
 
 
-def draw_card_thumb(card: Card):
-    image = card.image
-    rarity = card.rarity
-    attribute = card.attribute
-    bandID = card.bandID
-    frame = open_img(frame_selector(rarity))
-    star = open_img(StaticPath.star_untrained)
-    attribute = open_img(root.img(f"icon_{attribute}.png"))
-    band_icon = open_img(root.img(f"band_icon_{bandID}.png"))
-    image = image
-    image.alpha_composite(frame)
-    image.alpha_composite(band_icon, (3, 3))
-    image.alpha_composite(attribute, (130, 0))
-    for i in range(rarity):
-        image.alpha_composite(star, (5, 140-30*i))
-    return image
+    @staticmethod
+    async def draw_card_thumb(situationId: int):
+        card = Card(situationId)
+        await card.get_necessary_info()
+        image = card.image
+        rarity = card.rarity
+        attribute = card.attribute
+        bandID = card.bandID
+        frame = open_img(frame_selector(rarity))
+        star = open_img(StaticPath.star_untrained)
+        attribute = open_img(root.img(f"icon_{attribute}.png"))
+        band_icon = open_img(root.img(f"band_icon_{bandID}.png"))
+        image = image
+        image.alpha_composite(frame)
+        image.alpha_composite(band_icon, (3, 3))
+        image.alpha_composite(attribute, (130, 0))
+        for i in range(rarity):
+            image.alpha_composite(star, (5, 140-30*i))
+        return image
+
+
