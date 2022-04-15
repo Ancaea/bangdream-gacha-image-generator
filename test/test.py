@@ -10,7 +10,6 @@ async def test2():
     for i in range(10):
         size = (i*180 if i <= 4 else (i-5)*180, 0 if i <= 4 else 180)
         image.alpha_composite(await Card.draw_card_thumb(card_list[i]), size)
-    image.save("./saved_pic.png")
     return image
 
 async def test3():

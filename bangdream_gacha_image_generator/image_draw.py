@@ -1,7 +1,7 @@
 from io import BytesIO
 from PIL import Image
 from .assets import StaticPath, root
-from .card_draw import card_img_url, get_card_info, get_char_info
+from .bestdori import card_img_url, get_card_info, get_char_info
 from typing import Optional
 from loguru import logger
 from httpx import AsyncClient
@@ -47,7 +47,6 @@ class Card:
         char_info = await get_char_info(characterId)
         self.bandID = char_info["bandId"]
 
-
     @staticmethod
     async def draw_card_thumb(situationId: int):
         card = Card(situationId)
@@ -65,7 +64,5 @@ class Card:
         image.alpha_composite(band_icon, (3, 3))
         image.alpha_composite(attribute, (130, 0))
         for i in range(rarity):
-            image.alpha_composite(star, (5, 140-30*i))
+            image.alpha_composite(star, (5, 140 - 30 * i))
         return image
-
-
