@@ -2,6 +2,9 @@ from typing import List, Dict
 from httpx import AsyncClient, Response
 from loguru import logger
 from time import time as now
+from .config import Config
+
+region_code = Config.region_code
 
 
 async def quick_get(url: str) -> Response:
@@ -27,8 +30,13 @@ async def card_img_url(situationId: int) -> str:
     groupId = str(int(situationId / 50))
     groupId = "card" + "0" * (5 - len(groupId)) + groupId
     resourceSetName = (await get_card_info(situationId))["resourceSetName"]
-    img_url = f"https://bestdori.com/assets/jp/thumb/chara/{groupId}_rip/{resourceSetName}_normal.png"
-    return img_url
+    data = {
+        "thumb_url": f"https://bestdori.com/assets/jp/thumb/chara/{groupId}_rip/{resourceSetName}_normal.png",
+        "thumb_after_training_url": f"https://bestdori.com/assets/jp/thumb/chara/{groupId}_rip/{resourceSetName}_after_training.png",
+        "img_url": f"https://bestdori.com/assets/jp/characters/resourceset/{resourceSetName}_rip/card_normal.png",
+        "img_after_training_url": f"https://bestdori.com/assets/jp/characters/resourceset/{resourceSetName}_rip/card_after_training.png",
+    }
+    return data
 
 
 async def get_gacha_content(gachaId: int) -> List[str]:
@@ -60,7 +68,11 @@ async def get_all_gacha() -> Dict:
 
 def is_upping(value) -> bool:
     try:
-        if value["publishedAt"][3] < str(now()*1000) < value["closedAt"][3]:
+        if (
+            value["publishedAt"][region_code]
+            < str(now() * 1000)
+            < value["closedAt"][region_code]
+        ):
             return True
         else:
             return False

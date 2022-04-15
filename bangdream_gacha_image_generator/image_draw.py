@@ -2,9 +2,12 @@ from io import BytesIO
 from PIL import Image
 from .assets import StaticPath, root
 from .bestdori import card_img_url, get_card_info, get_char_info
-from typing import Optional
+from typing import Dict
 from loguru import logger
 from httpx import AsyncClient
+from .config import Config
+
+region_code = Config.region_code
 
 
 def open_img(image_path: str) -> Image.Image:
@@ -13,14 +16,14 @@ def open_img(image_path: str) -> Image.Image:
     return image
 
 
-async def open_img_from_url(url: str) -> Optional[Image.Image]:
+async def open_img_from_url(url: str) -> Image.Image:
     try:
         async with AsyncClient() as client:
             resp = await client.get(url)
         return Image.open(BytesIO(resp.read())).convert("RGBA")
     except Exception as e:
         logger.error(e)
-        return None
+        return Image.new("RGBA", (0, 0))
 
 
 def frame_selector(rarity: int):
@@ -33,13 +36,14 @@ def frame_selector(rarity: int):
 
 
 class Card:
-    def __init__(self, situationId) -> Image.Image:
+    def __init__(self, situationId):
         self.situationId = situationId
 
-    async def get_necessary_info(self):
+    async def _get_necessary_info(self):
         situationId = self.situationId
-        img_url = await card_img_url(situationId)
-        self.image = await open_img_from_url(img_url)
+        img_data = await card_img_url(situationId)
+        self.img_url = img_data["img_url"]
+        self.thumb_url = img_data["thumb_url"]
         card_info = await get_card_info(situationId)
         self.rarity = card_info["rarity"]
         self.attribute = card_info["attribute"]
@@ -48,10 +52,11 @@ class Card:
         self.bandID = char_info["bandId"]
 
     @staticmethod
-    async def draw_card_thumb(situationId: int):
+    async def draw_card_thumb(situationId: int) -> Image.Image:
         card = Card(situationId)
-        await card.get_necessary_info()
-        image = card.image
+        await card._get_necessary_info()
+        thumb_url = card.thumb_url
+        image = await open_img_from_url(thumb_url)
         rarity = card.rarity
         attribute = card.attribute
         bandID = card.bandID
@@ -66,3 +71,23 @@ class Card:
         for i in range(rarity):
             image.alpha_composite(star, (5, 140 - 30 * i))
         return image
+
+    @staticmethod
+    async def draw_card(situationId: int) -> Image.Image:
+        card = Card(situationId)
+        await card._get_necessary_info()
+        img_url = card.img_url
+        image = await open_img_from_url(img_url)
+        return image
+
+
+class Gacha:
+    @staticmethod
+    async def draw_banner(gacha_content: Dict) -> Image.Image:
+        try:
+            bannerAssetBundleName = gacha_content["bannerAssetBundleName"]
+            banner_url = f"https://bestdori.com/assets/jp/homebanner_rip/{bannerAssetBundleName}.png"
+            banner_image = open_img_from_url(banner_url)
+            return banner_image
+        except Exception:
+            return Image.new("RGBA", (0, 0))
