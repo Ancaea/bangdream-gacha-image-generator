@@ -60,7 +60,7 @@ async def get_all_gacha() -> Dict:
 
 def is_upping(value) -> bool:
     try:
-        if value["publishedAt"][0] < now*1000 < value["closedAt"][0]:
+        if value["publishedAt"][3] < str(now()*1000) < value["closedAt"][3]:
             return True
         else:
             return False
