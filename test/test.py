@@ -1,8 +1,10 @@
-from bangdream_gacha_image_generator.card_draw import draw_10times
-from bangdream_gacha_image_generator.image_draw import Card
+from bangdream_gacha_image_generator import Card, draw_10times
+from bangdream_gacha_image_generator.bestdori import get_all_gacha, get_gacha_content, get_upping_gacha
 import asyncio
 from PIL import Image
-
+import ujson as json
+from datetime import datetime
+from time import time
 
 async def test2():
     card_list = await draw_10times(5)
@@ -15,5 +17,5 @@ async def test2():
 async def test3():
     return (await Card.draw_card_thumb(790))
 
-res = asyncio.run(test2())
-res.show()
+res = asyncio.run(get_upping_gacha())
+print(res)
