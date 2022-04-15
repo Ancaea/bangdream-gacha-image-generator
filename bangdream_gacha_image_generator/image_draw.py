@@ -87,7 +87,7 @@ class Gacha:
         try:
             bannerAssetBundleName = gacha_content["bannerAssetBundleName"]
             banner_url = f"https://bestdori.com/assets/jp/homebanner_rip/{bannerAssetBundleName}.png"
-            banner_image = open_img_from_url(banner_url)
+            banner_image = await open_img_from_url(banner_url)
             return banner_image
         except Exception:
             return Image.new("RGBA", (0, 0))

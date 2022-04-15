@@ -19,9 +19,11 @@ async def image_10times():
 
 
 async def test():
-    gacha_content = await get_gacha_content(1)
-    return await Gacha.draw_banner(gacha_content)
+    gacha_content = {
+        "bannerAssetBundleName": "banner_gacha965"
+    }
+    return (await Gacha.draw_banner(gacha_content))
 
 
 res = asyncio.run(test())
-res.save("./test.png")
+res.show()
