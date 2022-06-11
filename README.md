@@ -1,2 +1,2 @@
-# bangdream-gacha-image-generator
-An image generator using resource from bangdeam
+# 要不跑路吧
+写太烂 摸了】

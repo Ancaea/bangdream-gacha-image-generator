@@ -4,7 +4,7 @@ from PIL import Image
 import ujson as json
 from time import time as now
 from loguru import logger
-from bangdream_gacha_image_generator.bestdori import get_gacha_content
+from bangdream_gacha_image_generator.bestdori import get_gacha_content, get_upping_gacha
 
 
 
@@ -19,10 +19,9 @@ async def image_10times():
 
 
 async def test():
-    gacha_content = {
-        "bannerAssetBundleName": "banner_gacha965"
-    }
-    return (await Gacha.draw_banner(gacha_content))
+    card = Card(situationId=980)
+    res = await Card.draw_card_thumb(situationId=980)
+    return res
 
 
 res = asyncio.run(test())
